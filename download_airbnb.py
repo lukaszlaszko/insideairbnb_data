@@ -28,7 +28,7 @@ def main(args):
             href = a['href']
             compressed = False
 
-            if 'visualisations' in href:
+            if 'visualisations' in href and not args.include_visualisations:
                 continue
 
             noext, ext = os.path.splitext(href)
@@ -36,7 +36,7 @@ def main(args):
                 compressed = True
                 _, ext = os.path.splitext(noext)
 
-            if ext == '.csv':
+            if ext in ('.csv', '.geojson'):
                 url = urlparse(href)
                 urlpath = os.path.relpath(url.path, '/')
                 if args.filters and any(filter not in urlpath.lower() for filter in args.filters):
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     parser.add_argument('--url', default='http://insideairbnb.com/get-the-data.html')
     parser.add_argument('--workdir', default='.')
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--include-visualisations', action='store_true')
     parser.add_argument('--filters', nargs='+', default=None)
 
     args = parser.parse_args()
